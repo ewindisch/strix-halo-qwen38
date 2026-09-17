@@ -1,0 +1,16 @@
+[Unit]
+Description=Qwen3.8-Flash-Next llama-server (kyuz0 toolbox container, Strix Halo)
+After=default.target
+StartLimitIntervalSec=600
+StartLimitBurst=5
+
+[Service]
+Type=simple
+# Optional persistent overrides (QWEN38_* vars) — file may not exist:
+EnvironmentFile=-%h/.config/qwen38/env
+ExecStart=%h/.local/share/qwen38/bin/llama-server-start.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target
