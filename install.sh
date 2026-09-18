@@ -68,7 +68,7 @@ if [ "$SKIP_MODELS" = 0 ]; then
   else
     echo "==> downloading unsloth/Qwen3.8-Flash-Next-GGUF UD-IQ3_XXS (~78 GB) — this takes a while"
     if command -v hf >/dev/null 2>&1; then
-      hf download unsloth/Qwen3.8-Flash-Next-GGUF --include "UD-IQ3_XXS/*" --local-dir "$MODEL_ROOT"
+      hf download unsloth/Qwen3.8-Flash-Next-GGUF --include "UD-IQ3_XXS/*" --include "mmproj-F16.gguf" --local-dir "$MODEL_ROOT"
       mv "$MODEL_ROOT"/UD-IQ3_XXS/*.gguf "$MODEL_ROOT"/ 2>/dev/null || true
       rmdir "$MODEL_ROOT/UD-IQ3_XXS" 2>/dev/null || true
     else

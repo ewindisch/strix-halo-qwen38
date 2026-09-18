@@ -67,6 +67,7 @@ Everything is environment-driven; persistent overrides go in `~/.config/qwen38/e
 | `QWEN38_YARN_SCALE` | `3` | YaRN factor (native 262144 × scale = ctx) |
 | `QWEN38_HOST` / `QWEN38_PORT` | `0.0.0.0` / `8081` | bind |
 | `QWEN38_CONTAINER` | `llama-rocm-10.0` | toolbox container name |
+| `QWEN38_MMPROJ` | *(unset = text-only)* | path to `mmproj-F16.gguf` to enable vision (+900 MB, ~4 GB RAM) |
 
 **Context costs ~41 KB/token** (KV at q8_0 + sparse-attention metadata), measured on a
 128 GB machine: 32K → 42 GB free · 512K → 20 GB · 768K → 11 GB · 1M → 1.4 GB (do not).

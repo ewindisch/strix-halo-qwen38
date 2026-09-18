@@ -14,6 +14,7 @@ YARN_SCALE="${QWEN38_YARN_SCALE:-3}"
 YARN_ORIG_CTX="${QWEN38_YARN_ORIG_CTX:-262144}"
 CONTAINER="${QWEN38_CONTAINER:-llama-rocm-10.0}"
 MODEL="${QWEN38_MODEL:-}"
+MMPROJ="${QWEN38_MMPROJ:-}"   # set to an mmproj .gguf path to enable vision
 
 # --- find the amdgpu card (cardN numbering shifts between memory layouts) ---
 GT=""
@@ -45,8 +46,17 @@ fi
 
 podman start "$CONTAINER" >/dev/null 2>&1 || true
 
+VISION_ARGS=()
+if [ -n "$MMPROJ" ]; then
+  [ -f "$MMPROJ" ] || { echo "QWEN38_MMPROJ set but not a file: $MMPROJ" >&2; exit 1; }
+  # this projector wants a minimum image-token budget for accuracy
+  VISION_ARGS+=(--mmproj "$MMPROJ" --image-min-tokens 1024)
+  echo "vision: enabled via $MMPROJ"
+fi
+
 exec podman exec "${ENV_ARGS[@]}" "$CONTAINER" llama-server \
   -m "$MODEL" \
+  "${VISION_ARGS[@]}" \
   --alias qwen3.8-flash-next --host "$HOST" --port "$PORT" \
   -ngl 99 -c "$CTX" -fit off --jinja -fa on -ctk q8_0 -ctv q8_0 \
   --rope-scaling yarn --rope-scale "$YARN_SCALE" --yarn-orig-ctx "$YARN_ORIG_CTX" \
